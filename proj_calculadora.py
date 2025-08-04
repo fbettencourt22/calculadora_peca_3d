@@ -237,13 +237,52 @@ def recalcular_pecas(linha=None, usar_valores_globais=True):
             print(f"Erro ao recalcular linha {index}: {e}")
 
 
+def exportar_excel():
+    global df_pecas
+    if df_pecas.empty:
+        print("\n Nenhuma peça registada. ")
+        return
+
+    nome_ficheiro = input("Introduza o nome do ficheiro a guardar: ")
+
+    if not nome_ficheiro.endswith(".xlsx"):
+        nome_ficheiro += ".xlsx"
+
+    try:
+        df_pecas.to_excel(nome_ficheiro, index=False)
+        print(f"Dados exportados com sucesso para: {nome_ficheiro}")
+    except Exception as e:
+        print(f"Erro ao gerar ficheiro: {e}")
+    print()
+
+
+def importar_excel():
+    global df_pecas
+
+    nome_ficheiro = input("Introduza o nome do ficheiro a importar: ")
+
+    if not nome_ficheiro.endswith(".xlsx"):
+        nome_ficheiro += ".xlsx"
+
+    try:
+        df_pecas = pd.read_excel(nome_ficheiro)
+        print(f"{nome_ficheiro} importado com sucesso!")
+    except FileNotFoundError:
+        print(f"Erro! {nome_ficheiro} não encontrado! ")
+    except Exception as e:
+        print(f"Erro ao importar ficheiro: {e}")
+    print()
+
+
 while True:
     print("Bem-Vindo(a)")
     print("1 - Inserir Peça")
     print("2 - Consultar Peças ")
     print("3 - Editar valor ")
     print("4 - Editar valores pre definidos")
-    print("5 - Sair do Programa ")
+    print("5 - Exportar Excel")
+    print("6 - Importar Excel")
+    print("7 - Sair do Programa ")
 
     escolha = input("Indique a opção a executar: ")
 
@@ -256,6 +295,10 @@ while True:
     elif escolha == "4":
         editar_configuracoes_fixas()
     elif escolha == "5":
+        exportar_excel()
+    elif escolha == "6":
+        importar_excel()
+    elif escolha == "7":
         print("Obrigado!")
         break
     else:
