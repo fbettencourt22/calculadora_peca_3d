@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 VALOR_KWH = 0.158
 CONSUMO_W = 140
@@ -65,6 +66,8 @@ def inserir_peca():
         round(custo_total, 2),
         round(preco_final, 2),
     ]
+
+    df_pecas.index = range(1, len(df_pecas) + 1)
 
     print(f"\n Peça '{nome}' adicionada com sucesso!\n")
 
@@ -243,13 +246,32 @@ def exportar_excel():
         print("\n Nenhuma peça registada. ")
         return
 
-    nome_ficheiro = input("Introduza o nome do ficheiro a guardar: ")
+    print("\nLinhas disponíveis para exportar:")
+    print(df_pecas)
+
+    linhas_str = input(
+        "Indique os números das linhas que quer exportar (separados por vírgula), ou ENTER para todas: "
+    ).strip()
+
+    if linhas_str == "":
+        df_exportar = df_pecas.copy()
+    else:
+        try:
+
+            linhas = [int(x) for x in linhas_str.split(",")]
+
+            df_exportar = df_pecas.loc[linhas]
+        except Exception as e:
+            print(f"Entrada inválida ou linhas não encontradas: {e}")
+            return
+
+    nome_ficheiro = input("Introduza o nome do ficheiro a guardar: ").strip()
 
     if not nome_ficheiro.endswith(".xlsx"):
         nome_ficheiro += ".xlsx"
 
     try:
-        df_pecas.to_excel(nome_ficheiro, index=False)
+        df_exportar.to_excel(nome_ficheiro, index=False)
         print(f"Dados exportados com sucesso para: {nome_ficheiro}")
     except Exception as e:
         print(f"Erro ao gerar ficheiro: {e}")
@@ -265,13 +287,109 @@ def importar_excel():
         nome_ficheiro += ".xlsx"
 
     try:
-        df_pecas = pd.read_excel(nome_ficheiro)
-        print(f"{nome_ficheiro} importado com sucesso!")
+        novo_df = pd.read_excel(nome_ficheiro)
+
+        if df_pecas.empty:
+            df_pecas = novo_df.copy()
+            df_pecas.index = range(1, len(df_pecas) + 1)
+        else:
+            novo_df = novo_df.reindex(columns=df_pecas.columns)
+
+            max_index = df_pecas.index.max()
+            if pd.isna(max_index):
+                max_index = 0
+            else:
+                max_index = int(max_index)
+
+            novo_df.index = range(max_index + 1, max_index + 1 + len(novo_df))
+
+            df_pecas = pd.concat([df_pecas, novo_df])
+
+        print(f"{nome_ficheiro} importado e adicionado com sucesso!")
     except FileNotFoundError:
         print(f"Erro! {nome_ficheiro} não encontrado! ")
     except Exception as e:
         print(f"Erro ao importar ficheiro: {e}")
     print()
+
+
+def filtro_dataframe():
+    global df_pecas
+    if df_pecas.empty:
+        print("\n Nenhuma peça registada. ")
+        return
+
+    print("\nColunas disponíveis:")
+    for i, col in enumerate(df_pecas.columns):
+        print(f"{i} - {col}")
+
+    idx_col = input("Escolha o número da coluna a filtrar: ")
+
+    if not idx_col.isdigit() or int(idx_col) not in range(len(df_pecas.columns)):
+        print(" Índice de coluna inválido!")
+        return
+
+    nome_coluna = df_pecas.columns[int(idx_col)]
+    tipo_dado = df_pecas[nome_coluna].dtype
+
+    filtro = None
+
+    try:
+        if pd.api.types.is_numeric_dtype(tipo_dado):
+            critério = float(
+                input(f"Indique o valor a filtrar na coluna '{nome_coluna}': ").replace(
+                    ",", "."
+                )
+            )
+            filtro = df_pecas[df_pecas[nome_coluna] == critério]
+
+        elif pd.api.types.is_datetime64_any_dtype(tipo_dado):
+            critério = pd.to_datetime(
+                input(f"Indique a data (DD/MM/AAAA) para filtrar '{nome_coluna}': "),
+                dayfirst=True,
+            )
+            filtro = df_pecas[df_pecas[nome_coluna] == critério]
+
+        else:
+            critério = input(
+                f"Indique o texto a procurar na coluna '{nome_coluna}': "
+            ).lower()
+            filtro = df_pecas[df_pecas[nome_coluna].str.lower() == critério]
+
+    except ValueError:
+        print("Erro no valor introduzido.")
+        return
+
+    if filtro is None:
+        print("Erro inesperado: filtro não definido.")
+        return
+
+    print(f"\nResultados encontrados para '{critério}' na coluna '{nome_coluna}':")
+    if filtro.empty:
+        print(" Nenhum resultado encontrado.")
+    else:
+        print(filtro)
+    print()
+
+
+def grafico_preco_final():
+    global df_pecas
+
+    if df_pecas.empty:
+        print("O DataFrame está vazio, nada para mostrar.")
+        return
+
+    coluna = "Preço Final (€)"
+    if coluna not in df_pecas.columns:
+        print(f"A coluna '{coluna}' não existe no DataFrame.")
+        return
+
+    df_pecas[coluna].plot(kind="bar", figsize=(10, 6), color="skyblue")
+    plt.title("Preço Final das Peças")
+    plt.xlabel("Índice da Peça")
+    plt.ylabel("Preço Final (€)")
+    plt.grid(axis="y")
+    plt.show()
 
 
 while True:
@@ -282,7 +400,9 @@ while True:
     print("4 - Editar valores pre definidos")
     print("5 - Exportar Excel")
     print("6 - Importar Excel")
-    print("7 - Sair do Programa ")
+    print("7 - Filtro")
+    print("8 - Grafico preço final")
+    print("9 - Sair do Programa ")
 
     escolha = input("Indique a opção a executar: ")
 
@@ -299,6 +419,10 @@ while True:
     elif escolha == "6":
         importar_excel()
     elif escolha == "7":
+        filtro_dataframe()
+    elif escolha == "8":
+        grafico_preco_final()
+    elif escolha == "9":
         print("Obrigado!")
         break
     else:
