@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Inserir Nova Peça</h2>
+<form method="post" action="{{ url_for('inserir') }}">
+    <label>Nome da Peça:<br>
+        <input type="text" name="nome" required>
+    </label><br>
+    <label>Material:<br>
+        <input type="text" name="material" required>
+    </label><br>
+    <label>Preço do Filamento (€/kg):<br>
+        <input type="text" name="preco_filamento_kg" required>
+    </label><br>
+    <label>Quantidade de Filamento (g):<br>
+        <input type="number" name="quantidade_filamento_g" required>
+    </label><br>
+    <label>Tempo de Impressão (h):<br>
+        <input type="text" name="tempo_horas" required>
+    </label><br>
+    <label>Tempo de Mão de Obra (min):<br>
+        <input type="text" name="tempo_mao_obra_min" required>
+    </label><br>
+    <label>Margem de Lucro (%):<br>
+        <input type="text" name="margem" required>
+    </label><br><br>
+    <button type="submit">Adicionar Peça</button>
+</form>
+{% endblock %}

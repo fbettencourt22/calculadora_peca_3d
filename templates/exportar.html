@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Exportar Peças - Escolha as linhas</h2>
+
+<form method="POST" action="{{ url_for('exportar') }}">
+    {% if pecas.empty %}
+        <p>Nenhuma peça disponível para exportar.</p>
+    {% else %}
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Selecionar</th>
+                    {% for col in pecas.columns %}
+                    <th>{{ col }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for i, peca in pecas.iterrows() %}
+                <tr>
+                    <td><input type="checkbox" name="linhas" value="{{ i }}"></td>
+                    {% for col in pecas.columns %}
+                    <td>{{ peca[col] }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <label for="filename">Nome do ficheiro:</label>
+        <input type="text" id="filename" name="filename" placeholder="Ex: minhas_pecas" required>
+        <br><br>
+        <button type="submit">Exportar Selecionadas</button>
+    {% endif %}
+</form>
+
+{% endblock %}

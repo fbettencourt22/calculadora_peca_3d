@@ -1,0 +1,81 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f0f0f0;
+    color: #333;
+}
+
+header, footer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #004080;
+    margin: 0 10px;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+}
+
+table, th, td {
+    border: 1px solid #aaa;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+.flash-messages {
+    list-style: none;
+    padding: 0;
+}
+
+.flash-messages li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}
+
+.flash-messages li.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.flash-messages li.danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"], input[type="number"] {
+    padding: 5px;
+    width: 250px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #004080;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #003060;
+}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Editar Peça</h2>
+<form method="post" action="{{ url_for('editar', id=id) }}">
+    <label>Nome da Peça:<br>
+        <input type="text" name="nome" value="{{ peca['Peça'] }}" required>
+    </label><br>
+    <label>Material:<br>
+        <input type="text" name="material" value="{{ peca['Material'] }}" required>
+    </label><br>
+    <label>Preço do Filamento (€/kg):<br>
+        <input type="text" name="preco_filamento_kg" value="{{ peca['Filamento (€/kg)'] }}" required>
+    </label><br>
+    <label>Quantidade de Filamento (g):<br>
+        <input type="number" name="quantidade_filamento_g" value="{{ peca['Filamento (g)'] }}" required>
+    </label><br>
+    <label>Tempo de Impressão (h):<br>
+        <input type="text" name="tempo_horas" value="{{ peca['Tempo (h)'] }}" required>
+    </label><br>
+    <label>Tempo de Mão de Obra (min):<br>
+        <input type="text" name="tempo_mao_obra_min" value="{{ peca['Mão de Obra (min)'] }}" required>
+    </label><br>
+    <label>Margem de Lucro (%):<br>
+        <input type="text" name="margem" value="{{ peca['Margem (%)'] }}" required>
+    </label><br><br>
+    <button type="submit">Salvar Alterações</button>
+</form>
+{% endblock %}

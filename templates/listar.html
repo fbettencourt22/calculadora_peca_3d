@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Lista de Peças</h2>
+{% if pecas.empty %}
+    <p>Nenhuma peça cadastrada.</p>
+{% else %}
+<table>
+    <thead>
+        <tr>
+            {% for col in pecas.columns %}
+                <th>{{ col }}</th>
+            {% endfor %}
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i, peca in pecas.iterrows() %}
+        <tr>
+            {% for col in pecas.columns %}
+                <td>{{ peca[col] }}</td>
+            {% endfor %}
+            <td>
+                <a href="{{ url_for('editar', id=i) }}">Editar</a> |
+                <a href="{{ url_for('apagar', id=i) }}" onclick="return confirm('Tem certeza que deseja apagar esta peça?')">Apagar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

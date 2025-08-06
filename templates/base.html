@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <title>Gestão de Peças 3D</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <header>
+        <h1>Gestão de Peças Impressão 3D</h1>
+            <nav>
+                <a href="{{ url_for('listar') }}">Listar Peças</a> |
+                <a href="{{ url_for('inserir') }}">Inserir Peça</a> |
+                <a href="{{ url_for('importar') }}">Importar Excel</a> |
+                <a href="{{ url_for('exportar') }}">Exportar Excel</a>
+            </nav>
+        <hr>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+    </footer>
+</body>
+</html>

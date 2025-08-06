@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Importar Peças (Excel)</h2>
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xlsx, .xls" required>
+    <br><br>
+    <button type="submit">Importar</button>
+</form>
+{% endblock %}
