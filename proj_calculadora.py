@@ -30,7 +30,7 @@ CONSUMO_W = 140
 CUSTO_MAO_OBRA = 20
 
 
-def recalcular_pecas():
+def calcular_pecas():
     global df_pecas
     for index, row in df_pecas.iterrows():
         try:
@@ -156,7 +156,7 @@ def editar(id):
             df_pecas.at[id, "Margem (%)"] = margem
 
             # Recalcular custos
-            recalcular_pecas()
+            calcular_pecas()
 
             flash(f"Peça '{nome}' atualizada com sucesso!", "success")
             return redirect(url_for("listar"))
