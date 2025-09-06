@@ -10,7 +10,10 @@
         <table border="1" cellpadding="5" cellspacing="0">
             <thead>
                 <tr>
-                    <th>Selecionar</th>
+                    <th>
+                        <input type="checkbox" id="select-all">
+                        Selecionar Todos
+                    </th>
                     {% for col in pecas.columns %}
                     <th>{{ col }}</th>
                     {% endfor %}
@@ -19,7 +22,9 @@
             <tbody>
                 {% for i, peca in pecas.iterrows() %}
                 <tr>
-                    <td><input type="checkbox" name="linhas" value="{{ i }}"></td>
+                    <td>
+                        <input type="checkbox" name="linhas" value="{{ i }}" class="linha-checkbox">
+                    </td>
                     {% for col in pecas.columns %}
                     <td>{{ peca[col] }}</td>
                     {% endfor %}
@@ -34,5 +39,24 @@
         <button type="submit">Exportar Selecionadas</button>
     {% endif %}
 </form>
+
+<script>
+const selectAll = document.getElementById('select-all');
+const checkboxes = document.querySelectorAll('.linha-checkbox');
+
+selectAll.addEventListener('change', function() {
+    checkboxes.forEach(cb => cb.checked = this.checked);
+});
+
+checkboxes.forEach(cb => {
+    cb.addEventListener('change', function() {
+        if (!this.checked) {
+            selectAll.checked = false;
+        } else if (Array.from(checkboxes).every(c => c.checked)) {
+            selectAll.checked = true;
+        }
+    });
+});
+</script>
 
 {% endblock %}
