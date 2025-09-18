@@ -28,6 +28,8 @@ df_pecas = pd.DataFrame(
 VALOR_KWH = 0.158
 CONSUMO_W = 140
 CUSTO_MAO_OBRA = 20
+DESPERDICIO_FILAMENTO = 0.10  # 10% extra por perdas
+CUSTO_MAQUINA_HORA = 0.20  # amortização/desgaste da impressora €/h
 
 
 def calcular_pecas():
@@ -40,24 +42,33 @@ def calcular_pecas():
             tempo_mao_obra_min = float(row["Mão de Obra (min)"])
             margem = float(row["Margem (%)"])
 
-            custo_filamento = (
-                (preco_filamento_kg / 1000) * quantidade_filamento_g
-            ) * 1.10
+            # Cálculos detalhados
+            custo_filamento = (preco_filamento_kg / 1000) * quantidade_filamento_g
+            custo_filamento *= 1 + DESPERDICIO_FILAMENTO
+
             consumo_kwh = (CONSUMO_W * tempo_horas) / 1000
             custo_energia = consumo_kwh * VALOR_KWH
+
             custo_mao_obra = (tempo_mao_obra_min / 60) * CUSTO_MAO_OBRA
+            custo_maquina = tempo_horas * CUSTO_MAQUINA_HORA
+
             custo_total = (
-                custo_filamento + custo_energia + custo_mao_obra + (0.15 * tempo_horas)
+                custo_filamento + custo_energia + custo_mao_obra + custo_maquina
             )
+
+            # Preço final usando margem (percentagem do preço final)
             preco_final = custo_total / (1 - (margem / 100))
 
+            # Atualizar DataFrame
             df_pecas.at[index, "Custo Filamento (€)"] = round(custo_filamento, 2)
             df_pecas.at[index, "Custo Energia (€)"] = round(custo_energia, 2)
             df_pecas.at[index, "Custo Mão de Obra (€)"] = round(custo_mao_obra, 2)
+            df_pecas.at[index, "Custo Máquina (€)"] = round(custo_maquina, 2)
             df_pecas.at[index, "Custo Total (€)"] = round(custo_total, 2)
             df_pecas.at[index, "Preço Final (€)"] = round(preco_final, 2)
             df_pecas.at[index, "Energia (€/kWh)"] = VALOR_KWH
             df_pecas.at[index, "Consumo (W)"] = CONSUMO_W
+
         except Exception as e:
             print(f"Erro no cálculo da peça {index}: {e}")
 
